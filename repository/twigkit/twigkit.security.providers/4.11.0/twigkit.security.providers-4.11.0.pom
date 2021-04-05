@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <artifactId>twigkit.security.providers</artifactId>
+    <packaging>pom</packaging>
+
+    <parent>
+        <groupId>twigkit</groupId>
+        <artifactId>twigkit.security</artifactId>
+         <version>4.11.0</version>
+        <relativePath>../pom.xml</relativePath>
+    </parent>
+
+    <modules>
+        <module>spring-security</module>
+        <module>tomcat7</module>
+        <module>passthrough</module>
+        <module>http-header</module>
+        <module>siteminder</module>
+        <module>saml</module>
+        <module>microsoft-security-token-service</module>
+        <module>oauth</module>
+        <module>oauth.office365</module>
+        <module>oauth.google</module>
+	    <module>oauth.facebook</module>
+        <module>cookie-cracker</module>
+        <module>ldap</module>
+        <module>active-directory</module>
+        <module>kerberos</module>
+        <module>oauth.adfs3</module>
+        <module>fusion</module>
+        <module>fusion-header</module>
+    </modules>
+
+    <dependencies>
+        <dependency>
+            <groupId>twigkit</groupId>
+            <artifactId>twigkit.security.core</artifactId>
+            <version>${project.parent.version}</version>
+        </dependency>
+    </dependencies>
+</project>

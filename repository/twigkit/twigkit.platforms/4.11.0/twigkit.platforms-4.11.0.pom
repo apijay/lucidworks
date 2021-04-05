@@ -1,0 +1,63 @@
+<project>
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>twigkit</groupId>
+    <artifactId>twigkit.platforms</artifactId>
+    <packaging>pom</packaging>
+
+    <parent>
+        <groupId>twigkit</groupId>
+        <artifactId>twigkit.core</artifactId>
+         <version>4.11.0</version>
+        <relativePath>../core/pom.xml</relativePath>
+    </parent>
+
+    <modules>
+        <module>fast</module>
+        <module>solr</module>
+        <module>gsa</module>
+        <module>amazon</module>
+        <module>attivio</module>
+        <module>factfinder</module>
+        <module>marklogic</module>
+        <module>autonomy</module>
+        <module>elasticsearch</module>
+        <module>elasticsearch/elastic/shield</module>
+        <module>elasticsearch/elastic2/shield</module>
+        <module>elasticsearch/elastic5/shield</module>
+        <module>mongodb</module>
+        <module>jdbc</module>
+        <module>youtube</module>
+        <module>twitter</module>
+        <module>offline</module>
+        <!--<module>exorbyte</module>-->
+        <module>exalead</module>
+        <module>funnelback</module>
+        <module>azure</module>
+        <!--<module>op3nvoice</module>--> <!-- Relies on snapshot versions! -->
+        <module>google</module>
+        <module>pipl</module>
+        <module>sharepoint</module>
+        <module>wolframalpha</module>
+        <module>webservice-search</module>
+        <module>wikipedia</module>
+        <module>jdbc/vertica</module>
+        <module>jdbc/sqlserver</module>
+        <module>database</module>
+        <module>hibernate</module>
+        <module>watson</module>
+        <module>lucene</module>
+        <module>filesystem</module>
+        <module>config</module>
+        <module>fusion-aggregator</module>
+        <module>satellite</module>
+    </modules>
+
+    <dependencies>
+        <!-- TwigKit -->
+        <dependency>
+            <groupId>twigkit</groupId>
+            <artifactId>twigkit.ui-jsp</artifactId>
+            <version>${project.parent.version}</version>
+        </dependency>
+    </dependencies>
+</project>

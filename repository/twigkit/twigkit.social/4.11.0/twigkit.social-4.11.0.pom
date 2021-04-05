@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <artifactId>twigkit.social</artifactId>
+    <packaging>pom</packaging>
+
+    <parent>
+        <groupId>twigkit</groupId>
+        <artifactId>twigkit.extensions</artifactId>
+         <version>4.11.0</version>
+        <relativePath>../pom.xml</relativePath>
+    </parent>
+
+    <modules>
+        <module>api</module>
+        <module>ui-jsp</module>
+        <module>services</module>
+        <module>provider.db</module>
+        <module>provider.db.mysql</module>
+        <module>provider.db.derby</module>
+        <module>provider.db.derby.memory</module>
+        <module>provider.db.derby.service</module>
+        <module>provider.db.oracle</module>
+        <module>provider.db.sqlserver</module>
+        <module>provider.platform</module>
+    </modules>
+
+    <dependencies>
+        <dependency>
+            <groupId>twigkit</groupId>
+            <artifactId>twigkit.ui-jsp</artifactId>
+            <version>${project.parent.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>twigkit</groupId>
+            <artifactId>twigkit.activity.api</artifactId>
+            <version>${project.parent.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>twigkit</groupId>
+            <artifactId>twigkit.commons</artifactId>
+            <version>${project.parent.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>xmlunit</groupId>
+            <artifactId>xmlunit</artifactId>
+            <version>1.3</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.markdownj</groupId>
+            <artifactId>markdownj</artifactId>
+            <version>0.3.0-1.0.2b4</version>
+        </dependency>
+    </dependencies>
+</project>

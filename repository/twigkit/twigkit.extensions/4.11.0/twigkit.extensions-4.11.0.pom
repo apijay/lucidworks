@@ -1,0 +1,39 @@
+<project>
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>twigkit</groupId>
+    <artifactId>twigkit.extensions</artifactId>
+    <packaging>pom</packaging>
+
+    <parent>
+        <groupId>twigkit</groupId>
+        <artifactId>twigkit.core</artifactId>
+         <version>4.11.0</version>
+        <relativePath>../core/pom.xml</relativePath>
+    </parent>
+
+    <modules>
+        <module>activity</module>
+        <module>cache</module>
+        <module>linguistics</module>
+        <module>media</module>
+        <module>federation</module>
+        <module>social</module>
+        <module>smartlogic</module>
+        <module>page</module>
+        <module>geo</module>
+        <module>relational</module>
+        <module>business-intelligence</module>
+        <module>alert</module>
+        <module>task</module>
+        <module>editor</module>
+    </modules>
+
+    <dependencies>
+        <!-- TwigKit -->
+        <dependency>
+            <groupId>twigkit</groupId>
+            <artifactId>twigkit.workflow</artifactId>
+            <version>${project.parent.version}</version>
+        </dependency>
+    </dependencies>
+</project>

@@ -1,0 +1,317 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <artifactId>twigkit.app.studio</artifactId>
+    <packaging>pom</packaging>
+
+    <parent>
+        <artifactId>twigkit.app</artifactId>
+        <groupId>twigkit</groupId>
+        <version>4.11.0</version>
+        <relativePath>../pom.xml</relativePath>
+    </parent>
+
+    <!-- Global properties -->
+    <properties>
+
+        <!-- Ports to use for Jetty and Tomcat plugins -->
+        <twigkit.http.port>8080</twigkit.http.port>
+        <twigkit.http.stop.port>7080</twigkit.http.stop.port>
+        <twigkit.http.stop.key>twigkit</twigkit.http.stop.key>
+
+        <!-- Context path for Jetty plugin -->
+        <twigkit.http.context>/</twigkit.http.context>
+
+        <!-- Default packaging type -->
+        <packaging.type>war</packaging.type>
+
+        <!-- ======================================================================================== -->
+        <!-- Maven and Appkit (Twigkit) Profiles                                                      -->
+        <!-- By default, build output will be stored under /dist                                      -->
+        <!-- If an Appkit profile is activated the output will be stored under /dist/${profile-name}  -->
+        <!-- ======================================================================================== -->
+        <twigkit.profile></twigkit.profile>
+        <profile-name>${twigkit.profile}</profile-name>
+
+    </properties>
+
+    <!-- Build profiles -->
+    <build>
+        <finalName>${project.name}</finalName>
+
+        <!-- The following plugins are available/used by all profiles -->
+        <plugins>
+
+            <!-- ======================================================= -->
+            <!-- Compiler plugin                                         -->
+            <!-- ======================================================= -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.3</version>
+                <configuration>
+                    <source>${maven.compiler.source}</source>
+                    <target>${maven.compiler.target}</target>
+                    <encoding>UTF-8</encoding>
+                </configuration>
+            </plugin>
+
+            <!-- ======================================================= -->
+            <!-- Jetty Maven plugin                                      -->
+            <!-- ======================================================= -->
+            <plugin>
+                <groupId>org.eclipse.jetty</groupId>
+                <artifactId>jetty-maven-plugin</artifactId>
+                <version>9.4.15.v20190215</version>
+                <configuration>
+                    <stopKey>${twigkit.http.stop.key}</stopKey>
+                    <stopPort>${twigkit.http.stop.port}</stopPort>
+                    <webApp>
+                        <descriptor>src/main/webapp/WEB-INF/web.xml</descriptor>
+                        <contextPath>${twigkit.http.context}</contextPath>
+                        <webInfIncludeJarPattern>.*/fig-[^/]*\.jar$|.*/twigkit\.[^/]*\.jar$|.*/classes/.*
+                        </webInfIncludeJarPattern>
+                        <extraClasspath>${project.basedir}</extraClasspath>
+                    </webApp>
+
+                    <!-- Disable hot redeployment to allow config watch -->
+                    <scanIntervalSeconds>0</scanIntervalSeconds>
+
+                    <systemProperties>
+
+                        <!-- This plugin can only be used when developing an app -->
+                        <systemProperty>
+                            <name>twigkit.mode</name>
+                            <value>dev</value>
+                        </systemProperty>
+
+                        <!-- Enable config watch -->
+                        <systemProperty>
+                            <name>twigkit.conf.watch</name>
+                            <value>true</value>
+                        </systemProperty>
+
+                    </systemProperties>
+                    <httpConnector>
+                        <port>${twigkit.http.port}</port>
+                    </httpConnector>
+                </configuration>
+            </plugin>
+
+            <!-- ======================================================= -->
+            <!-- Generate a WAR-file under /dist                         -->
+            <!-- ======================================================= -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-war-plugin</artifactId>
+                <version>2.6</version>
+                <configuration>
+                    <outputDirectory>${project.basedir}/dist/${profile-name}</outputDirectory>
+                    <warName>${project.artifactId}</warName>
+                </configuration>
+            </plugin>
+
+            <!-- ======================================================= -->
+            <!-- Tomcat Maven plugin: Generate a JAR-file under /dist    -->
+            <!-- ======================================================= -->
+            <plugin>
+                <groupId>org.apache.tomcat.maven</groupId>
+                <artifactId>tomcat7-maven-plugin</artifactId>
+                <version>2.3-SNAPSHOT</version>
+                <configuration>
+                    <systemProperties>
+                        <!-- Tomcat plugin should only be used in development -->
+                        <twigkit.mode>dev</twigkit.mode>
+                    </systemProperties>
+                    <path>/</path>
+                    <port>${twigkit.http.port}</port>
+                </configuration>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>exec-war-only</goal>
+                        </goals>
+                        <phase>package</phase>
+                        <configuration>
+                            <path>/</path>
+                            <buildDirectory>${project.basedir}/dist/${profile-name}</buildDirectory>
+                            <finalName>${project.build.finalName}.jar</finalName>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <!-- ======================================================= -->
+            <!-- Clean up app before and after build                     -->
+            <!-- ======================================================= -->
+            <plugin>
+                <artifactId>maven-clean-plugin</artifactId>
+                <version>2.5</version>
+                <executions>
+
+                    <!-- ======================================================= -->
+                    <!-- Clean up /dist before packaging                         -->
+                    <!-- ======================================================= -->
+                    <execution>
+                        <id>pre-clean</id>
+                        <phase>clean</phase>
+                        <goals>
+                            <goal>clean</goal>
+                        </goals>
+                        <configuration>
+                            <filesets>
+                                <fileset>
+                                    <directory>${project.basedir}/dist/${profile-name}</directory>
+                                    <includes>
+                                        <include>**</include>
+                                    </includes>
+                                </fileset>
+                            </filesets>
+                        </configuration>
+                    </execution>
+
+                    <!-- ======================================================= -->
+                    <!-- Clean up /dist after packaging                          -->
+                    <!-- ======================================================= -->
+                    <execution>
+                        <id>post-clean</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>clean</goal>
+                        </goals>
+                        <configuration>
+                            <excludeDefaultDirectories>true</excludeDefaultDirectories>
+                            <filesets>
+                                <fileset>
+                                    <directory>${project.basedir}/dist/${profile-name}</directory>
+                                    <includes>
+                                        <!-- Unneeded artifacts from the Tomcat 7 plugin -->
+                                        <include>*.manifest</include>
+                                        <include>*.properties</include>
+                                    </includes>
+                                    <excludes>
+                                        <exclude>*.war</exclude>
+                                        <exclude>*.jar</exclude>
+                                    </excludes>
+                                </fileset>
+                            </filesets>
+                        </configuration>
+                    </execution>
+
+                </executions>
+            </plugin>
+
+        </plugins>
+    </build>
+
+    <profiles>
+
+        <!-- ================================================================== -->
+        <!-- Default profile                                                    -->
+        <!-- ================================================================== -->
+        <profile>
+            <id>enterprise</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+        </profile>
+
+        <!-- ================================================================== -->
+        <!-- Appkit profiles                                                    -->
+        <!-- An Appkit profile may be used instead of the default by appending  -->
+        <!-- the system property -Dtwigkit.profile=<profile_name> to the maven  -->
+        <!-- command, e.g. mvn clean package -Dtwigkit.profile=<my_profile>     -->
+        <!-- WAR and JAR-files are packaged under /dist/${profile-name}         -->
+        <!-- ================================================================== -->
+        <profile>
+            <id>appkit-profile</id>
+            <activation>
+                <property>
+                    <name>twigkit.profile</name>
+                </property>
+            </activation>
+
+            <build>
+                <plugins>
+
+                    <!-- ======================================================= -->
+                    <!-- Copying static resources                                -->
+                    <!-- ======================================================= -->
+                    <plugin>
+                        <artifactId>maven-resources-plugin</artifactId>
+                        <version>2.7</version>
+                        <executions>
+
+                            <!-- ======================================================= -->
+                            <!-- Copying profile resources into /target/classes          -->
+                            <!-- ======================================================= -->
+                            <execution>
+                                <id>copy-appkit-profile-resources</id>
+                                <phase>process-classes</phase>
+                                <goals>
+                                    <goal>copy-resources</goal>
+                                </goals>
+                                <configuration>
+                                    <!-- Overwrite any files that already exist -->
+                                    <overwrite>true</overwrite>
+
+                                    <outputDirectory>${project.basedir}/target/classes</outputDirectory>
+                                    <resources>
+                                        <resource>
+                                            <directory>${project.basedir}/src/main/profiles/${profile-name}</directory>
+                                        </resource>
+                                    </resources>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+
+    </profiles>
+
+    <dependencies>
+        <!-- Appkit -->
+        <dependency>
+            <groupId>twigkit</groupId>
+            <artifactId>twigkit.workflow</artifactId>
+            <version>${project.parent.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>twigkit</groupId>
+            <artifactId>twigkit.webservices</artifactId>
+            <version>${project.parent.version}</version>
+        </dependency>
+
+        <!-- Logging -->
+        <dependency>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-classic</artifactId>
+            <version>1.2.3</version>
+        </dependency>
+
+        <!-- Filters -->
+        <dependency>
+            <groupId>com.samaxes.filter</groupId>
+            <artifactId>cachefilter</artifactId>
+            <version>2.3.1</version>
+        </dependency>
+
+        <!-- Servlets -->
+        <dependency>
+            <groupId>javax.servlet</groupId>
+            <artifactId>jstl</artifactId>
+            <version>1.2</version>
+        </dependency>
+        <dependency>
+            <groupId>javax.servlet</groupId>
+            <artifactId>servlet-api</artifactId>
+            <version>2.5</version>
+            <scope>provided</scope>
+        </dependency>
+    </dependencies>
+
+</project>
